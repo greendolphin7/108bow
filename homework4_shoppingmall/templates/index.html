@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <!-- 구글폰트 -->
+  <link href="https://fonts.googleapis.com/css?family=Stylish&amp;display=swap" rel="stylesheet">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>재우의 쇼핑몰</title>
+  <style type="text/css">
+    * {
+      font-family: 'Stylish', sans-serif;
+    }
+
+    .wrap {
+      width: 500px;
+      margin: auto;
+    }
+
+    .img {
+      background-image: url('https://i.011st.com/ex_t/R/400x400/1/85/0/src/pd/18/4/3/0/0/5/7/lQGRk/2172430057_B.jpg');
+      background-size: cover;
+      background-position: center;
+      width: 500px;
+      height: 300px;
+    }
+
+    .info {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .user-info {
+      margin: 20px 5px auto 5px;
+    }
+
+    h1,
+    h5 {
+      display: inline;
+    }
+
+    .order {
+      text-align: center;
+    }
+
+    .orders {
+      margin-top: 100px;
+    }
+  </style>
+
+  <script>
+
+    function make_order() {
+      let order_name = $('#order_name').val();
+      let order_count = $('#order_count').val();
+      let order_address = $('#order_address').val();
+      let order_phone = $('#order_phone').val();
+
+      if (order_name == '') {
+        alert('이름을 입력해주세요');
+        $('#order_name').focus();
+        return;
+      } else if (order_count == '') {
+        alert('수량을 입력해주세요');
+        $('#order_count').focus();
+        return;
+      } else if (order_address == '') {
+        alert('주소을 입력해주세요');
+        $('#order_address').focus();
+        return;
+      }
+      else if (order_phone == '') {
+        alert('전화번호를 입력해주세요');
+        $('#order_phone').focus();
+        return;
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "/orders",
+        data: { order_name_give: order_name, order_count_give: order_count, order_address_give: order_address, order_phone_give: order_phone },
+        success: function (response) {
+          if (response['result'] == 'success') {
+            alert(response['msg']);
+            $('#order_name').val('');
+            $('#order_count').val('');
+            $('#order_address').val('');
+            $('#order_phone').val('');
+            window.location.reload();
+          }
+        }
+      })
+    }
+
+    $(document).ready(function () {
+      $('#orders-box').html('');
+      listing();
+    });
+
+    function listing() {
+      $.ajax({
+        type: "GET",
+        url: "/orders",
+        data: {},
+        success: function (response) {
+          if (response['result'] == 'success') {
+            let orders = response['orders'];
+            for (let i = 0; i < orders.length; i++) {
+              make_order_card(orders[i]['order_name'], orders[i]['order_count'], orders[i]['order_address'], orders[i]['order_phone']);
+            }
+          } else {
+            alert('주문내역을 받아오지 못했습니다');
+          }
+        }
+      })
+    }
+
+    function make_order_card(order_name, order_count, order_address, order_phone) {
+      let temp_html = '<tr>\
+                                <td>'+ order_name + '</td>\
+                                <td>'+ order_count + '</td>\
+                                <td>'+ order_address + '</td>\
+                                <td>'+ order_phone + '</td>\
+                            </tr>';
+      $('#orders-box').append(temp_html);
+    }
+
+  </script>
+</head>
+
+<body>
+
+  <div class="wrap">
+    <div class="img"></div>
+    <div class="info">
+      <h1>미니가습기 팝니다</h1>
+      <h5>가격: 15000원/개</h5>
+      <p>이 미니 가습기는 좁은 공간에서 사용하기 편리하고 귀엽습니다</p>
+    </div>
+    <div class="info">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">주문자 이름</span>
+        </div>
+        <input type="text" class="form-control" id="order_name" aria-describedby="basic-addon3">
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01">수량</label>
+        </div>
+        <select class="custom-select" id="order_count">
+          <option selected="" value=""> -- 수량을 선택하세요 -- </option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">주소</span>
+        </div>
+        <input type="text" class="form-control" id="order_address" aria-describedby="basic-addon3">
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">전화번호</span>
+        </div>
+        <input type="text" class="form-control" id="order_phone" aria-describedby="basic-addon3">
+      </div>
+      <div class="order">
+        <button onclick="order()" type="button" class="btn btn-primary">주문하기</button>
+      </div>
+    </div>
+    <div class="orders">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">이름</th>
+            <th scope="col">수량</th>
+            <th scope="col">주소</th>
+            <th scope="col">전화번호</th>
+          </tr>
+        </thead>
+
+      </table>
+    </div>
+  </div>
+</body>
+
+</html>
