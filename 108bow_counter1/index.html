@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/earlyaccess/notosanskr.css">
     <title>108배 도전하기</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="loadingstyle.css">
 </head>
 
 <body>
@@ -40,6 +41,7 @@
             Start</button>
         <div><canvas id="canvas"></canvas></div>
         <div id="label-container"></div>
+        <div id="loadingdiv"></div>
     </div>
 
     <!-- Optional JavaScript -->
@@ -69,6 +71,10 @@
             {
                 alert('캠을 켜는 중입니다. 잠시만 기다려주세요.');
             }
+
+            let temp = "<p>로딩중... 캠 알림창이 뜨면 허용 버튼을 눌러주세요! </p> <img id='loadingstyle' src='http://www.vitorazevedo.net/external_files/loading_small.png'>"
+            $('#loadingdiv').append(temp);
+
             const modelURL = URL + "model.json";
             const metadataURL = URL + "metadata.json";
 
@@ -84,6 +90,7 @@
             const flip = true; // whether to flip the webcam
             webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
             await webcam.setup(); // request access to the webcam
+            $('#loadingdiv').hide();
             await webcam.play();
             window.requestAnimationFrame(loop);
 
