@@ -21,3 +21,6 @@
 -기본 템플릿과 bootstrap, codepenio에서 UI를 개선했다.
 -캠이 켜지기까지 시간이 많이 걸려 loading모션을 넣어주었다.(codepen.io에서 받아왔다.)
 -뾱! 하는 소리를 다운받고 mp3파일로 바꾸었다.
+
+
+![kjw](https://user-images.githubusercontent.com/17819874/80307997-75292200-8807-11ea-9255-ef41f77161b1.gif)
